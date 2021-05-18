@@ -1,5 +1,6 @@
 package com.shivam.memeshare
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -17,14 +18,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
+    var currentURL:String?=null
     private fun loadMeme(){
         loading.visibility=View.VISIBLE
         val queue = Volley.newRequestQueue(this)
-        val url = "https://meme-api.herokuapp.com/gimme"
+        val currentURL = "https://meme-api.herokuapp.com/gimme"
 
 // Request a string response from the provided URL.
         val jsonObjectRequest = JsonObjectRequest(
-            Request.Method.GET, url,null,
+            Request.Method.GET, currentURL,null,
             Response.Listener { response ->
                 // Display the first 500 characters of the response string.
                 val url=response.getString("url")
@@ -41,5 +43,11 @@ class MainActivity : AppCompatActivity() {
     fun btnNext(view: View) {
         loadMeme()
     }
-    fun btnShare(view: View) {}
+    fun btnShare(view: View) {
+        intent= Intent(Intent.ACTION_SEND)
+        intent.type="text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT,"Hey!! Checkout this anazing meme : $currentURL" )
+        val chooser=Intent.createChooser(intent,"Share this meme using...")
+        startActivity(chooser)
+    }
 }
