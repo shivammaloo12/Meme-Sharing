@@ -18,10 +18,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
-    var currentURL:String?=null
+    var url:String?=null
     private fun loadMeme(){
-        loading.visibility=View.VISIBLE
-        val queue = Volley.newRequestQueue(this)
+
+
         val currentURL = "https://meme-api.herokuapp.com/gimme"
 
 // Request a string response from the provided URL.
@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
             Request.Method.GET, currentURL,null,
             Response.Listener { response ->
                 // Display the first 500 characters of the response string.
-                val url=response.getString("url")
-                loading.visibility=View.GONE
+                 url=response.getString("url")
+
                 Glide.with(this).load(url).into(imageMeme)
             },
             Response.ErrorListener {
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             })
 
 // Add the request to the RequestQueue.
-        queue.add(jsonObjectRequest)
+        MySingleton.getInstance(this).addToRequestQueue(jsonObjectRequest)
     }
     fun btnNext(view: View) {
         loadMeme()
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     fun btnShare(view: View) {
         intent= Intent(Intent.ACTION_SEND)
         intent.type="text/plain"
-        intent.putExtra(Intent.EXTRA_TEXT,"Hey!! Checkout this anazing meme : $currentURL" )
+        intent.putExtra(Intent.EXTRA_TEXT,"Hey!! Checkout this anazing meme : $url" )
         val chooser=Intent.createChooser(intent,"Share this meme using...")
         startActivity(chooser)
     }
